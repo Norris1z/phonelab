@@ -1,0 +1,7 @@
+- name: Install Ansible Tools
+  hosts: phones
+  tasks:
+    - name: Install Python3
+      ansible.builtin.raw: apk add --no-cache --no-interactive python3
+      become: true
+      when: ansible_python_interpreter is not defined

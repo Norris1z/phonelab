@@ -1,0 +1,40 @@
+- name: Configure Controller Node
+  hosts: controllers
+  become: true
+  tasks:
+    - name: Configure k0s
+      ansible.builtin.template:
+        src: ../templates/k0s.yaml.j2
+        dest: /etc/k0s/k0s.yaml
+
+    - name: Install k0s controller
+      ansible.builtin.command:
+        argv:
+          - k0s
+          - install
+          - controller
+          - --enable-worker
+          - "--kubelet-extra-args=--node-ip={{ node_ip }}"
+          - -c
+          - /etc/k0s/k0s.yaml
+      when:
+        - "'k0scontroller.service' not in ansible_facts.services"
+        - "'k0scontroller' not in ansible_facts.services"
+    
+    - name: Start k0s controller
+      ansible.builtin.service:
+        name: k0scontroller
+        state: started
+        enabled: true
+
+    - name: Create worker token
+      ansible.builtin.command:
+        cmd: k0s token create --role=worker
+      register: worker_token
+      changed_when: true
+      # no_log: true
+
+    - name: Store token
+      ansible.builtin.set_fact:
+        k0s_worker_token: "{{ worker_token.stdout }}"
+      # no_log: true

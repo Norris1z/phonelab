@@ -1,0 +1,16 @@
+phones:
+  hosts:
+    galaxy-a11:
+      ansible_host: 192.168.0.158
+      ansible_python_interpreter: /usr/sbin/python3.14
+    google-pixel-7:
+      ansible_host: 192.168.0.115
+      ansible_python_interpreter: /usr/bin/python3.14
+
+  children:
+    controllers:
+      hosts:
+        google-pixel-7:
+    workers:
+      hosts:
+        galaxy-a11:

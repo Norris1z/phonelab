@@ -1,0 +1,34 @@
+- name: Configure Worker Node
+  hosts: workers
+  become: true
+  tasks:
+    - name: Create k0s configuration directory
+      ansible.builtin.file:
+        path: /etc/k0s
+        state: directory
+
+    - name: Copy worker join token
+      ansible.builtin.copy:
+        content: "{{ hostvars[groups['controllers'][0]]['k0s_worker_token'] }}"
+        dest: /etc/k0s/worker-token
+      no_log: true
+
+    - name: Install k0s worker
+      ansible.builtin.command:
+        argv:
+          - k0s
+          - install
+          - worker
+          - --token-file
+          - /etc/k0s/worker-token
+          - --kubelet-extra-args=--node-ip={{ node_ip }}
+      when:
+        - "'k0sworker.service' not in ansible_facts.services"
+        - "'k0sworker' not in ansible_facts.services"
+      no_log: true
+    
+    - name: Start k0s worker
+      ansible.builtin.service:
+        name: k0sworker
+        state: started
+        enabled: true

@@ -1,0 +1,14 @@
+- name: Setup
+  ansible.builtin.import_playbook: playbooks/setup.yaml
+
+- name: Setup Kubernetes
+  ansible.builtin.import_playbook: playbooks/kubernetes.yaml
+
+- name: Gather Common Facts
+  ansible.builtin.import_playbook: playbooks/common.yaml
+
+- name: Configure Controller Node
+  ansible.builtin.import_playbook: playbooks/controller.yaml
+
+- name: Configure Worker Node
+  ansible.builtin.import_playbook: playbooks/worker.yaml

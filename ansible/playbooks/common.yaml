@@ -1,0 +1,16 @@
+- name: Gather facts
+  hosts: phones
+  tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Gather network facts
+      ansible.builtin.setup:
+        gather_subset:
+          - network
+
+    # Nodes talk over Wi-Fi (wlan0): pin the node IP to it. Each phone also has
+    # usb0 = 172.16.42.1 (its USB link to a computer) which is unreachable by other nodes
+    - name: Set node Wi-Fi IP
+      ansible.builtin.set_fact:
+        node_ip: "{{ ansible_facts['wlan0']['ipv4']['address'] }}"

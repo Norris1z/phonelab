@@ -1,0 +1,16 @@
+- name: Setup Kubernetes
+  hosts: phones
+  tasks:
+    - name: Download k0s installer
+      ansible.builtin.get_url:
+        url: https://get.k0s.sh
+        dest: /tmp/get-k0s.sh
+        mode: "0755"
+
+    - name: Install k0s
+      ansible.builtin.shell: /tmp/get-k0s.sh
+      become: true
+      environment:
+        K0S_VERSION: "{{ k0s_version }}"
+      args:
+        creates: /usr/local/bin/k0s
