@@ -2,6 +2,11 @@
   hosts: controllers
   become: true
   tasks:
+    - name: Create k0s configuration directory
+      ansible.builtin.file:
+        path: /etc/k0s
+        state: directory
+
     - name: Configure k0s
       ansible.builtin.template:
         src: ../templates/k0s.yaml.j2
@@ -29,12 +34,36 @@
 
     - name: Create worker token
       ansible.builtin.command:
-        cmd: k0s token create --role=worker
+        cmd: k0s token create --role=worker --expiry=1h
       register: worker_token
       changed_when: true
-      # no_log: true
+      no_log: true
 
     - name: Store token
       ansible.builtin.set_fact:
         k0s_worker_token: "{{ worker_token.stdout }}"
-      # no_log: true
+      no_log: true
+
+    - name: Read admin kubeconfig
+      ansible.builtin.command: k0s kubeconfig admin
+      register: k0s_admin_kubeconfig
+      changed_when: false
+      no_log: true
+
+    - name: Create local kube directory
+      ansible.builtin.file:
+        path: "{{ local_kube_dir }}"
+        state: directory
+      delegate_to: localhost
+      become: false
+      run_once: true
+
+    - name: Save kubeconfig locally
+      ansible.builtin.copy:
+        content: "{{ k0s_admin_kubeconfig.stdout }}"
+        dest: "{{ local_kubeconfig }}"
+        mode: "0600"
+      delegate_to: localhost
+      become: false
+      run_once: true
+      no_log: true

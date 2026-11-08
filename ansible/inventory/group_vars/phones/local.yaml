@@ -1,0 +1,3 @@
+local_home: "{{ lookup('env', 'HOME') }}"
+local_kube_dir: "{{ local_home }}/.kube"
+local_kubeconfig: "{{ local_kube_dir }}/phonelab.conf"
