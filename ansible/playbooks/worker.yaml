@@ -21,6 +21,7 @@
           - worker
           - --token-file
           - /etc/k0s/worker-token
+          - --profile=phone
           - --kubelet-extra-args=--node-ip={{ node_ip }}
       when:
         - "'k0sworker.service' not in ansible_facts.services"

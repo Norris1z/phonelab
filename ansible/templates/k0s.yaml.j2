@@ -6,3 +6,15 @@ spec:
   api:
     address: {{ node_ip }}
     externalAddress: {{ node_ip }}
+  storage:
+    type: kine
+  controllerManager:
+    extraArgs:
+      node-monitor-grace-period: 2m
+  workerProfiles:
+    - name: phone
+      values:
+        nodeStatusUpdateFrequency: 30s
+        nodeLeaseDurationSeconds: 120
+        syncFrequency: 3m
+        fileCheckFrequency: 2m
