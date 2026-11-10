@@ -16,6 +16,7 @@ spec:
     size: small
   sync:
     kind: GitRepository
+    interval: 10m
     url: "https://github.com/Norris1z/phonelab.git"
     ref: "refs/heads/main"
     path: "kubernetes/flux-system"
