@@ -3,8 +3,6 @@ kind: DaemonSet
 metadata:
   name: node-exporter
   namespace: monitoring
-  labels:
-    app.kubernetes.io/name: node-exporter
 spec:
   selector:
     matchLabels:
@@ -16,7 +14,6 @@ spec:
     spec:
       priorityClassName: system-node-critical
       hostNetwork: true
-      hostPID: true
       automountServiceAccountToken: false
       tolerations:
         - operator: Exists
@@ -35,9 +32,7 @@ spec:
             - --path.sysfs=/host/sys
             - --path.rootfs=/host/root
             - --path.udev.data=/host/root/run/udev/data
-            - --web.listen-address=:9100
             - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/(containerd|k0s|credentials)/.+|var/lib/kubelet/.+|var/lib/k0s/.+)($|/)
-            - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$
             - --collector.netdev.device-include=^(wlan|eth|usb).*
             - --collector.textfile.directory=/host/root/var/lib/node_exporter/textfile # devices expose the battery metrics
             - --no-collector.powersupplyclass
@@ -73,7 +68,6 @@ spec:
             - name: root
               mountPath: /host/root
               readOnly: true
-              mountPropagation: HostToContainer
       volumes:
         - name: proc
           hostPath:
