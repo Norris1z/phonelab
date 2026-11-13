@@ -8,3 +8,11 @@ configMapGenerator:
     namespace: monitoring
     files:
       - datasources.yaml
+  - name: grafana-dashboard-providers
+    namespace: monitoring
+    files:
+      - dashboards.yaml
+  - name: grafana-dashboards
+    namespace: monitoring
+    files:
+      - dashboards/phones.json
