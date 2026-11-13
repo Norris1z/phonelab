@@ -16,3 +16,7 @@ configMapGenerator:
     namespace: monitoring
     files:
       - dashboards/phones.json
+      - dashboards/workloads.json
+      - dashboards/cluster.json
+      - dashboards/flux.json
+      - dashboards/prometheus.json

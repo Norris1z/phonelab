@@ -4,4 +4,5 @@ resources:
   - namespace.yaml
   - node-exporter
   - prometheus
+  - kube-state-metrics
   - grafana
