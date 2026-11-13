@@ -3,3 +3,9 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - node-exporter.yaml
+  - prometheus.yaml
+configMapGenerator:
+  - name: prometheus-config
+    namespace: monitoring
+    files:
+      - prometheus-config.yaml
