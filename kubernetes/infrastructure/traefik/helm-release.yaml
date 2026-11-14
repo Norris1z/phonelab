@@ -19,6 +19,19 @@ spec:
   values:
     global:
       checkNewVersion: false
+      aliasHeadersStrategy: delete
+    providers:
+      kubernetesIngress:
+        enabled: false
+      kubernetesGateway:
+        enabled: true
+    ingressClass:
+      enabled: false
+    gateway:
+      listeners:
+        web:
+          namespacePolicy:
+            from: All
     service:
       annotations:
         metallb.io/loadBalancerIPs: 192.168.0.251
