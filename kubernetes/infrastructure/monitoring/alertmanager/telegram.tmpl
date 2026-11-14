@@ -1,0 +1,13 @@
+{{ define "telegram.default.message" -}}
+{{ range .Alerts -}}
+{{ if eq .Status "resolved" }}✅{{ else if eq .Labels.severity "critical" }}🔥{{ else }}⚠️{{ end }} <b>{{ .Labels.alertname }}</b>{{ if eq .Status "resolved" }} resolved{{ end }}
+{{ .Annotations.summary | html }}
+{{ if .Labels.pod }}pod: <code>{{ .Labels.namespace }}/{{ .Labels.pod }}</code>
+{{ else if .Labels.deployment }}deployment: <code>{{ .Labels.namespace }}/{{ .Labels.deployment }}</code>
+{{ else if .Labels.daemonset }}daemonset: <code>{{ .Labels.namespace }}/{{ .Labels.daemonset }}</code>
+{{ else if .Labels.kind }}{{ .Labels.kind | toLower }}: <code>{{ .Labels.exported_namespace }}/{{ .Labels.name }}</code>
+{{ else if .Labels.instance }}instance: <code>{{ .Labels.instance }}</code>
+{{ end }}
+{{ end -}}
+<a href="https://grafana.phonelab.norris1z.com/alerting/list?search={{ .CommonLabels.alertname | urlquery }}">Open in Grafana</a>
+{{- end }}

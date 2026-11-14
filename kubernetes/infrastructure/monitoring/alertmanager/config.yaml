@@ -6,6 +6,9 @@ route:
     - matchers: [alertname="Watchdog"]
       receiver: heartbeat
 
+templates:
+  - /etc/alertmanager/*.tmpl
+
 inhibit_rules:
   - source_matchers: [alertname="NodeNotReady"]
     target_matchers: [severity=~"warning|critical"]
