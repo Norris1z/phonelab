@@ -37,6 +37,15 @@ spec:
             from: All
           certificateRefs:
             - name: phonelab-wildcard-tls
+    ingressRoute:
+      dashboard:
+        enabled: true
+        matchRule: Host(`traefik.phonelab.norris1z.com`)
+        entryPoints: [websecure]
+        middlewares:
+          - name: dashboard-auth
+        tls:
+          secretName: phonelab-wildcard-tls
     service:
       annotations:
         metallb.io/loadBalancerIPs: 192.168.0.251
