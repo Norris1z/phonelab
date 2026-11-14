@@ -16,6 +16,7 @@ spec:
     disableWait: true
   upgrade:
     disableWait: true
+    crds: CreateReplace
   values:
     global:
       checkNewVersion: false
@@ -25,6 +26,8 @@ spec:
         enabled: false
       kubernetesGateway:
         enabled: true
+      kubernetesCRD:
+        safeNaming: true
     ingressClass:
       enabled: false
     gateway:
