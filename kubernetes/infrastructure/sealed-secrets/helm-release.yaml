@@ -16,3 +16,9 @@ spec:
     crds: CreateReplace
   values:
     fullnameOverride: sealed-secrets-controller
+    resources:
+      requests:
+        cpu: 10m
+        memory: 48Mi
+      limits:
+        memory: 96Mi

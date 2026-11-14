@@ -36,3 +36,11 @@ patches:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
             effect: NoSchedule
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
