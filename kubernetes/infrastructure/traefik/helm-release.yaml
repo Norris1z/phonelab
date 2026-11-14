@@ -29,9 +29,14 @@ spec:
       enabled: false
     gateway:
       listeners:
-        web:
+        websecure:
+          port: 8443
+          protocol: HTTPS
+          hostname: "*.phonelab.norris1z.com"
           namespacePolicy:
             from: All
+          certificateRefs:
+            - name: phonelab-wildcard-tls
     service:
       annotations:
         metallb.io/loadBalancerIPs: 192.168.0.251
