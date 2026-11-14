@@ -1,0 +1,122 @@
+groups:
+  - name: phones
+    rules:
+      - alert: BatteryHot
+        expr: phone_battery_temp_celsius >= 40
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} battery at {{ $value }} °C"
+      - alert: BatteryDataStale
+        expr: time() - node_textfile_mtime_seconds{file=~".*/battery.prom"} > 300
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} battery data is {{ $value | humanizeDuration }} old"
+      - alert: BatteryLowWhilePlugged
+        expr: phone_battery_percent < 60 and on (instance) phone_battery_plugged == 1
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} at {{ $value }}% while plugged in"
+      - alert: BatteryFull
+        expr: phone_battery_percent >= 100
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} has been at 100% for 15 minutes"
+      - alert: ChargeLimitOff
+        expr: phone_battery_charge_limit_active == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} charge limit is inactive"
+
+  - name: nodes
+    rules:
+      - alert: NodeNotReady
+        expr: label_replace(kube_node_status_condition{condition="Ready", status="true"}, "instance", "$1", "node", "(.*)") == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is not Ready"
+      - alert: NodeMemoryLow
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} has {{ $value | humanizePercentage }} memory available"
+      - alert: NodeDiskLow
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} has {{ $value | humanizePercentage }} disk free"
+      - alert: TargetDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.job }} target {{ $labels.instance }} is down"
+
+  - name: workloads
+    rules:
+      - alert: PodCrashLooping
+        expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is crash looping"
+      - alert: ContainerOOMKilled
+        expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1 and on (namespace, pod, container) increase(kube_pod_container_status_restarts_total[15m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was OOM killed"
+      - alert: PodNotRunning
+        expr: kube_pod_status_phase{phase=~"Pending|Failed|Unknown"} == 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.pod }} is {{ $labels.phase }}"
+      - alert: DeploymentUnavailable
+        expr: kube_deployment_status_replicas_unavailable > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.deployment }} has {{ $value }} unavailable replicas"
+      - alert: DaemonSetUnavailable
+        expr: kube_daemonset_status_number_unavailable > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.daemonset }} has {{ $value }} unavailable pods"
+      - alert: FluxResourceNotReady
+        expr: flux_resource_info{ready!="True", suspended="False"} == 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready ({{ $labels.reason }})"
+
+  - name: meta
+    rules:
+      - alert: Watchdog
+        expr: vector(1)
+        labels:
+          severity: none
+        annotations:
+          summary: Always firing, proves the alerting pipeline works

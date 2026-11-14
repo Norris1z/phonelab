@@ -6,3 +6,4 @@ resources:
   - prometheus
   - kube-state-metrics
   - grafana
+  - alertmanager

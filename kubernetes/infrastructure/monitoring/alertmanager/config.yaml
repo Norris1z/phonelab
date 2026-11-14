@@ -1,0 +1,20 @@
+route:
+  receiver: telegram
+  group_by: [alertname, instance]
+  repeat_interval: 4h
+  routes:
+    - matchers: [alertname="Watchdog"]
+      receiver: heartbeat
+
+inhibit_rules:
+  - source_matchers: [alertname="NodeNotReady"]
+    target_matchers: [severity=~"warning|critical"]
+    equal: [instance]
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token_file: /etc/telegram/bot-token
+        chat_id_file: /etc/telegram/chat-id
+        parse_mode: HTML
+  - name: heartbeat
