@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - secret.yaml
   - grafana.yaml
+  - http-route.yaml
 configMapGenerator:
   - name: grafana-datasources
     namespace: monitoring
