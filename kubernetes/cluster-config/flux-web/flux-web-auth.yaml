@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: flux-web-auth
+  namespace: flux-system
+spec:
+  encryptedData:
+    users: AgAysoU+iIpOHXYtHakq/GlcNcZXHpKOX2AvskZbkYyDu1Bdl93XjwlmhjfBFycDPlrc199NAzualTHGzVYl9fdK0W5eZ9mjiJ826uXjjNyeO6zVUEYzjXuHO2DIT+uB5x9rhR7Mr/9yl43cDsF2uQWsvYv4wC14kmdo0picUjnW0Cmv4PfK0fUYcaaRc0rtc30V15fIwkiWGn2hUqaKgcLjXzen/ZTyBZ13uZt6FFraZbsACuR554KTEhvSNUB5cjXA4i99WGgxnpgaJMluGuW09SdcwCc1ZH/ZfY+hHV0y1tzr4IKX2f2bL+VLp5i+Z+tsv/ZkN8NkRv+QEiv96Q8cRr4rGA82q7/KRZ/W+IWi2RDPee+6xxFmMa+t/+t78hCzouwW+S8r34wNSwXQVaC+ReGOpfsOjCwHehYVVGAKAA+MQ8WoqZbD1zovnXNiLmgIh7Nf0KfLCjw/0nW8JKQGmiUOWNcv7cLdq2MnMyBnv/bzfwBn7Y76lk49PoCZFpCl3WbpUSlSQkcGlqgDoYOiURnzPLwor3m4XEtfyWeWs9ifVwxe3pr3+3njmh7DB8VaL9DjHiMGIBXeO5nFsp+4Gi40D0/l2utL6XAm4QfVKs1oHg4IHVNesLEN+2ADAAARN+hz5mOVh4MVdptAcdQqoiNjpjU/s2kYQLv7/KyhGjfO01/iard4tR1hFEIGdWQC2SgESc+s804+RlGMjgV6WJeNG8fYslc3nFe7fk/5Kr3xupCRht59q7VGsu1DE7DHpoz+x4C4GAg+iScVnrpK4B4IpZ0=
+  template:
+    metadata:
+      name: flux-web-auth
+      namespace: flux-system
