@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: phonelab-wildcard
+  namespace: traefik
+spec:
+  secretName: phonelab-wildcard-tls
+  dnsNames:
+    - "*.phonelab.norris1z.com"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
