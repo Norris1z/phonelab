@@ -52,7 +52,7 @@ spec:
         - sideContainerName: buildah
           image:
             repository: docker.io/norris1z/buildah
-            tag: v1.45.1
+            tag: v1.43.1
           command: "sleep"
           args: "infinity"
           resources:
