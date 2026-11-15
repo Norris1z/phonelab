@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: qemu-binfmt-installer
+  labels:
+    app.kubernetes.io/name: qemu-binfmt-installer
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: qemu-binfmt-installer
+    spec:
+      nodeSelector:
+        phonelab.norris1z.com/arch-emulation: "qemu"
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      restartPolicy: OnFailure
+      containers:
+      - name: binfmt-installer
+        image: tonistiigi/binfmt:qemu-v10.2.3
+        args:
+        - "--install"
+        - "all"
+        securityContext:
+          privileged: true
