@@ -4,13 +4,38 @@
     - name: Gather service facts
       ansible.builtin.service_facts:
 
-    - name: Gather network facts
+    - name: Gather network and hardware facts
       ansible.builtin.setup:
         gather_subset:
           - network
+          - hardware
 
     # Nodes talk over Wi-Fi (wlan0): pin the node IP to it. Each phone also has
     # usb0 = 172.16.42.1 (its USB link to a computer) which is unreachable by other nodes
     - name: Set node Wi-Fi IP
       ansible.builtin.set_fact:
         node_ip: "{{ ansible_facts['wlan0']['ipv4']['address'] }}"
+
+- name: Node labels
+  hosts: phones
+  tasks:
+    - name: Common node labels
+      ansible.builtin.set_fact:
+        node_labels: "{{ ['phonelab.norris1z.com/memory-tier=' + ('high-end' if ansible_facts['memtotal_mb'] > 4096 else 'standard')] }}"
+
+    - name: Emulation capability labels
+      block:
+        - name: Check if binfmt_misc filesystem is supported by the kernel
+          ansible.builtin.command: grep -q binfmt_misc /proc/filesystems
+          register: binfmt_filesystem_check
+          changed_when: false
+          failed_when: false
+
+        - name: Append emulation label if kernel supports binfmt
+          ansible.builtin.set_fact:
+            node_labels: "{{ node_labels + ['phonelab.norris1z.com/arch-emulation=qemu'] }}"
+          when: binfmt_filesystem_check.rc == 0
+
+    - name: Format labels
+      ansible.builtin.set_fact:
+        common_node_labels: "{{ node_labels | join(',') }}"
