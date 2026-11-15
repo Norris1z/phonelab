@@ -24,6 +24,7 @@
         node_labels: "{{ ['phonelab.norris1z.com/memory-tier=' + ('high-end' if ansible_facts['memtotal_mb'] > 4096 else 'standard')] }}"
 
     - name: Emulation capability labels
+      become: true
       block:
         - name: Check if binfmt_misc filesystem is supported by the kernel
           ansible.builtin.command: grep -q binfmt_misc /proc/filesystems
@@ -31,6 +32,19 @@
           changed_when: false
           failed_when: false
 
+        - name: Ensure binfmt_misc mount point exists
+          ansible.builtin.command: grep -q binfmt_misc /proc/mounts
+          register: binfmt_mount_check
+          changed_when: false
+          failed_when: false
+          when: binfmt_filesystem_check.rc == 0
+
+        - name: Mount binfmt_misc filesystem
+          ansible.builtin.command: mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
+          when: 
+            - binfmt_filesystem_check.rc == 0
+            - binfmt_mount_check.rc != 0
+      
         - name: Append emulation label if kernel supports binfmt
           ansible.builtin.set_fact:
             node_labels: "{{ node_labels + ['phonelab.norris1z.com/arch-emulation=qemu'] }}"
