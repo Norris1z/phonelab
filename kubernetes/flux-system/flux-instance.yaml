@@ -32,7 +32,7 @@ spec:
             value: 96Mi
   sync:
     kind: GitRepository
-    interval: 10m
+    interval: 5m
     url: "https://github.com/Norris1z/phonelab.git"
     ref: "refs/heads/main"
     path: "kubernetes/flux-system"
