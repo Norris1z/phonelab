@@ -52,9 +52,11 @@ spec:
         - sideContainerName: buildah
           image:
             repository: docker.io/norris1z/buildah
-            tag: v1.43.1
+            tag: v1.45.1
           command: "sleep"
           args: "infinity"
+          securityContext:
+            privileged: true # needed for access to fuse-overlayfs (for now theres no label for pods with this capability)
           resources:
             requests:
               cpu: 500m
