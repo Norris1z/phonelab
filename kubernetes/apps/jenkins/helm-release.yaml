@@ -15,6 +15,26 @@ spec:
     controller:
       admin:
         existingSecret: jenkins-admin
+      additionalPlugins:
+        - job-dsl:3732.v9a_c49a_61a_313
+      additionalExistingSecrets:
+        - name: git-credentials
+          keyName: username
+        - name: git-credentials
+          keyName: password
+      JCasC:
+        configScripts:
+          credentials: |
+            credentials:
+              system:
+                domainCredentials:
+                  - credentials:
+                      - usernamePassword:
+                          scope: GLOBAL
+                          id: git-credentials
+                          description: Git credentials
+                          username: ${git-credentials-username}
+                          password: ${git-credentials-password}
       resources:
         limits:
           memory: "2Gi"
@@ -38,32 +58,6 @@ spec:
           effect: NoSchedule
     agent:
       jenkinsUrl: https://jenkins.phonelab.norris1z.com
-      yamlTemplate: |
-        apiVersion: v1
-        kind: Pod
-        spec:
-          nodeSelector:
-            node-role.kubernetes.io/control-plane: "true"
-          tolerations:
-            - key: node-role.kubernetes.io/control-plane
-              operator: Exists
-              effect: NoSchedule
-      additionalContainers:
-        - sideContainerName: buildah
-          image:
-            repository: docker.io/norris1z/buildah
-            tag: v1.45.1
-          command: "sleep"
-          args: "infinity"
-          securityContext:
-            privileged: true # needed for access to fuse-overlayfs (for now theres no label for pods with this capability)
-          resources:
-            requests:
-              cpu: 500m
-              memory: 1Gi
-            limits:
-              cpu: "1"
-              memory: 2Gi
       resources:
         requests:
           cpu: 500m
