@@ -22,6 +22,10 @@ spec:
           keyName: username
         - name: git-credentials
           keyName: password
+        - name: registry-credentials
+          keyName: username
+        - name: registry-credentials
+          keyName: password
       JCasC:
         configScripts:
           credentials: |
@@ -35,6 +39,12 @@ spec:
                           description: Git credentials
                           username: ${git-credentials-username}
                           password: ${git-credentials-password}
+                      - usernamePassword:
+                          scope: GLOBAL
+                          id: registry-credentials
+                          description: Registry credentials
+                          username: ${registry-credentials-username}
+                          password: ${registry-credentials-password}
       resources:
         limits:
           memory: "2Gi"
