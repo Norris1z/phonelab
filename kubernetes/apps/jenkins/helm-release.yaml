@@ -26,6 +26,10 @@ spec:
           keyName: username
         - name: registry-credentials
           keyName: password
+        - name: deploy-ssh
+          keyName: username
+        - name: deploy-ssh
+          keyName: private-key
       JCasC:
         configScripts:
           credentials: |
@@ -45,6 +49,14 @@ spec:
                           description: Registry credentials
                           username: ${registry-credentials-username}
                           password: ${registry-credentials-password}
+                      - basicSSHUserPrivateKey:
+                          scope: GLOBAL
+                          id: deploy-ssh
+                          description: Deploy SSH key
+                          username: ${deploy-ssh-username}
+                          privateKeySource:
+                            directEntry:
+                              privateKey: ${deploy-ssh-private-key}
       resources:
         limits:
           memory: "2Gi"

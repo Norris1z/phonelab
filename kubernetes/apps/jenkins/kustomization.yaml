@@ -8,5 +8,6 @@ resources:
   - jenkins-admin.yaml
   - git-credentials.yaml
   - registry-credentials.yaml
+  - deploy-ssh.yaml
   - helm-repository.yaml
   - helm-release.yaml
